@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Math – Week 11</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@500;600;700&display=swap">
+<style>
+/* Layout: a quiet single column. One thing on screen at a time: one lesson card or one question, big type, lots of air. */
+:root {
+  --bg: #FBFDFC;
+  --card: #FFFFFF;
+  --ink: #17323A;
+  --muted: #5E777B;
+  --line: #E1ECE7;
+  --pond: #2F5DB0;
+  --pond-ink: #FFFFFF;
+  --pond-soft: #E6EDFA;
+  --sun: #E9A800;
+  --sun-soft: #FFF4CC;
+  --ok: #1B7F45;
+  --ok-soft: #E1F6E8;
+  --oops: #B4531A;
+  --oops-soft: #FCEBDD;
+  --jelly: #D7EEF6;
+  --roe: #F6B26B;
+  --tad: #33463F;
+  --leaf: #7DBB63;
+  --twig: #8B6B4B;
+  --f-display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Andika", "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1D21; --card: #16282D; --ink: #E6F2EE; --muted: #9FB8B3; --line: #26403F;
+    --pond: #8DB0FF; --pond-ink: #0B1730; --pond-soft: #1B2A4A; --sun: #FFC93C; --sun-soft: #3A3215;
+    --ok: #57D68B; --ok-soft: #163625; --oops: #FF9F6B; --oops-soft: #3B2317;
+    --jelly: #2C4A55; --roe: #E39A4F; --tad: #CFE3DA; --leaf: #5E9E48; --twig: #B08D69;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1D21; --card: #16282D; --ink: #E6F2EE; --muted: #9FB8B3; --line: #26403F;
+  --pond: #8DB0FF; --pond-ink: #0B1730; --pond-soft: #1B2A4A; --sun: #FFC93C; --sun-soft: #3A3215;
+  --ok: #57D68B; --ok-soft: #163625; --oops: #FF9F6B; --oops-soft: #3B2317;
+  --jelly: #2C4A55; --roe: #E39A4F; --tad: #CFE3DA; --leaf: #5E9E48; --twig: #B08D69;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 1.4rem; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--pond); }
+.wrap {
+  max-width: 660px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--pond); color: var(--pond-ink); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; padding-block: 8px; }
+.home { min-width: 56px; min-height: 52px; border: 0; background: transparent; font-size: 1.8rem; border-radius: 14px; }
+.jar { font-family: var(--f-display); font-weight: 600; font-size: 1.3rem; background: var(--sun-soft); color: var(--ink); border-radius: 999px; padding: 6px 18px; font-variant-numeric: tabular-nums; }
+a.home { display: inline-grid; place-items: center; text-decoration: none; } .home + .home { margin-right: auto; } /* 📚 all weeks, 🏠 this page's start */
+
+main { padding-block: 36px 72px; display: grid; gap: 32px; }
+.hi { font-family: var(--f-display); font-weight: 700; font-size: 2.4rem; text-align: center; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+.tile { display: grid; justify-items: center; gap: 6px; padding: 20px 12px; min-height: 150px; border-radius: 24px; border: 2px solid var(--line); background: var(--card); text-align: center; }
+.tile:hover { border-color: var(--pond); }
+.tile.done { border-color: var(--sun); background: var(--sun-soft); }
+.tile .emo { font-size: 3rem; line-height: 1.1; }
+.tile .name { font-family: var(--f-display); font-weight: 600; font-size: 1.35rem; line-height: 1.2; }
+.tile .meta { color: var(--muted); font-size: 1rem; font-variant-numeric: tabular-nums; }
+
+.btn { min-height: 64px; padding: 12px 26px; border-radius: 999px; border: 2px solid var(--pond); background: var(--card); color: var(--pond); font-family: var(--f-display); font-weight: 600; font-size: 1.3rem; }
+.btn.solid { background: var(--pond); color: var(--pond-ink); }
+.btn.big { min-width: 190px; font-size: 1.5rem; }
+.btn:disabled { opacity: .4; }
+.nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.nav.col { flex-direction: column; align-items: stretch; }
+
+/* Lesson cards */
+.dots { display: flex; justify-content: center; gap: 10px; }
+.dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--line); }
+.dots i.seen { background: var(--pond-soft); }
+.dots i.on { background: var(--pond); }
+.lcard { display: grid; justify-items: center; gap: 28px; text-align: center; padding-block: 24px; }
+.bigpic { font-size: 7rem; line-height: 1.1; }
+.bigpic .art { width: 170px; height: 170px; }
+.say { font-family: var(--f-display); font-weight: 600; font-size: 2rem; line-height: 1.3; text-wrap: balance; }
+.stages { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 22px; }
+.stages li { position: relative; width: 100px; display: grid; justify-items: center; gap: 6px; font-size: 1.1rem; color: var(--muted); }
+.stages li:not(:last-child)::after { content: "→"; position: absolute; right: -19px; top: 30px; font-size: 1.3rem; color: var(--muted); }
+.sp { height: 88px; display: grid; place-items: center; font-size: 4.2rem; line-height: 1; }
+.sp .art { width: 88px; height: 88px; }
+.tiny { font-size: .45em; }
+.mid { font-size: .7em; }
+.kw { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+.word { display: grid; justify-items: center; gap: 4px; text-align: center; padding: 20px 12px; border-radius: 24px; background: var(--card); border: 2px solid var(--line); }
+.word b { font-family: var(--f-display); font-size: 1.6rem; font-weight: 600; }
+.word span:last-child { color: var(--muted); font-size: 1.1rem; }
+
+/* One question */
+.qtop { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--muted); font-size: 1.05rem; }
+.qtop b { font-family: var(--f-display); font-weight: 600; color: var(--ink); font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+.meter { height: 10px; border-radius: 999px; background: var(--pond-soft); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--sun); border-radius: 999px; }
+.q { display: grid; gap: 24px; }
+.qtext { font-size: 1.7rem; font-weight: 700; line-height: 1.35; text-wrap: balance; }
+.qtext .blank { display: inline-block; min-width: 4em; border-bottom: 4px solid var(--pond); text-align: center; color: var(--pond); }
+.q .bigpic { font-size: 5rem; }
+.rows { display: grid; gap: 18px; }
+.hint { color: var(--muted); font-size: 1.05rem; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.opt { min-height: 68px; padding: 12px 18px; border-radius: 18px; border: 2px solid var(--line); background: var(--card); font-size: 1.35rem; line-height: 1.3; text-align: left; }
+.opt:hover:not(:disabled) { border-color: var(--pond); }
+.opt.picked-right, .opt.is-answer { border-color: var(--ok); background: var(--ok-soft); }
+.opt.picked-wrong { border-color: var(--oops); background: var(--oops-soft); text-decoration: line-through; }
+.opt.picked-now { border-color: var(--pond); background: var(--pond-soft); }
+.row { display: grid; gap: 10px; }
+.row .lab { font-weight: 700; font-size: 1.35rem; }
+.pair { display: block; width: 100%; text-align: left; padding: 12px 18px; border-radius: 16px; border: 2px solid var(--pond); background: var(--pond-soft); font-size: 1.25rem; }
+.pair.picked-right { border-color: var(--ok); background: var(--ok-soft); }
+.pair.picked-wrong { border-color: var(--oops); background: var(--oops-soft); }
+.pair s { color: var(--muted); }
+.pair .fix { color: var(--ok); }
+.slots { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin: 0; padding: 0; counter-reset: sl; }
+.slot { counter-increment: sl; min-height: 60px; min-width: 130px; padding: 8px 14px; border-radius: 16px; border: 2px dashed var(--line); display: flex; align-items: center; font-size: 1.2rem; }
+.slot::before { content: counter(sl) "."; color: var(--pond); font-weight: 700; margin-right: 6px; }
+.slot.filled { border-style: solid; border-color: var(--pond); background: var(--pond-soft); }
+textarea { width: 100%; min-height: 120px; font: inherit; font-size: 1.35rem; padding: 14px; border-radius: 18px; border: 2px solid var(--line); background: var(--card); color: var(--ink); }
+.fb { border-radius: 20px; padding: 18px 20px; display: grid; gap: 12px; justify-items: start; }
+.fb.ok { background: var(--ok-soft); }
+.fb.no { background: var(--oops-soft); }
+.fb.wait { background: var(--pond-soft); }
+.fb .say { font-size: 1.7rem; }
+.fb.ok .say { color: var(--ok); }
+.fb .why { color: var(--muted); font-size: 1.2rem; }
+.star { display: inline-block; font-size: 1.3em; line-height: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .fb.ok .star { animation: pop .6s ease-out; }
+  @keyframes pop { 0% { transform: scale(.2) rotate(-40deg); } 70% { transform: scale(1.4) rotate(10deg); } 100% { transform: scale(1); } }
+}
+.numin { width: 100%; max-width: 280px; min-height: 76px; padding: 8px 16px; font-family: var(--f-display); font-weight: 600; font-size: 2.2rem; text-align: center; border-radius: 18px; border: 3px solid var(--line); background: var(--card); color: var(--ink); }
+.numin:focus { border-color: var(--pond); outline: none; }
+.numin.ok { border-color: var(--ok); background: var(--ok-soft); }
+.numin.no { border-color: var(--oops); background: var(--oops-soft); text-decoration: line-through; }
+.qpic { display: flex; justify-content: center; font-size: 4rem; line-height: 1.1; }
+.qpic .art { width: 100%; max-width: 420px; height: auto; }
+.dotpic { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.dotpic .g { display: flex; flex-wrap: wrap; gap: 7px; padding: 8px 10px; border: 2px dashed var(--muted); border-radius: 14px; }
+.dotpic .grid { display: grid; gap: 9px; padding: 4px; }
+.dotpic i { width: 20px; height: 20px; border-radius: 50%; background: var(--sun); }
+.big-eq { font-family: var(--f-display); font-weight: 600; font-size: 2.4rem; line-height: 1.5; text-align: center; font-variant-numeric: tabular-nums; }
+.lcard .bigpic, .qpic { width: 100%; display: flex; justify-content: center; }
+.bigpic .art.nl, .qpic .art.nl { width: min(100%, 440px); height: auto; }
+.nl text { font-family: var(--f-display); }
+.nl .hit { fill: var(--ok); font-weight: 700; }
+.bm { display: grid; gap: 8px; width: min(100%, 420px); font-family: var(--f-display); font-size: 1.2rem; line-height: 1.3; }
+.bm .bp { display: flex; gap: 4px; }
+.bm span { padding: 12px 6px; border-radius: 12px; background: var(--pond-soft); border: 2px solid var(--pond); text-align: center; white-space: nowrap; }
+.bm .unk { background: var(--sun-soft); border: 2px dashed var(--sun); }
+.party { display: grid; justify-items: center; gap: 16px; text-align: center; padding-block: 24px; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.25rem; }
+  main { padding-block: 24px 56px; gap: 26px; }
+  .hi { font-size: 2rem; }
+  .tiles { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tile { min-height: 130px; padding: 16px 8px; }
+  .tile .emo { font-size: 2.5rem; }
+  .tile .name { font-size: 1.15rem; }
+  .bigpic { font-size: 5.5rem; }
+  .bigpic .art { width: 140px; height: 140px; }
+  .say { font-size: 1.7rem; }
+  .stages { gap: 14px; }
+  .stages li { width: 66px; font-size: .9rem; }
+  .stages li:not(:last-child)::after { right: -14px; top: 18px; }
+  .sp { height: 56px; font-size: 2.8rem; }
+  .sp .art { width: 56px; height: 56px; }
+  .qtext { font-size: 1.5rem; }
+  .opts { grid-template-columns: 1fr; }
+  .opt { font-size: 1.25rem; }
+  .btn.big { min-width: 0; flex: 1; }
+}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="home" href="https://mostafa-mansour1.github.io/roza/" aria-label="All weeks">📚</a>
+    <button class="home" id="home" type="button" aria-label="Home">🏠</button>
+    <span class="jar" id="jar" aria-live="polite">⭐ 0</span>
+  </div>
+</header>
+<main class="wrap" id="view"></main>
+
+
+<script>
+// Question builders. For mc/multi, answers are written as option text and turned into indexes below.
+// num = a typed number; `chk` lets the check script recompute rounding and estimates.
+const mc = (n, q, o, a, why, pic) => ({ t: "mc", n, q, o, a, why, pic });
+const multi = (n, q, o, a, why, pic) => ({ t: "multi", n, q, o, a, why, pic });
+const num = (n, q, a, why, pic, chk) => ({ t: "num", n, q, a: [].concat(a), why, pic, chk });
+const sheet = (id, emo, title, qs) => ({ id, kind: "quiz", emo, title, qs });
+const fmt = x => Number(x).toLocaleString("en-US");
+const R = (x, p) => Math.floor((x + p / 2) / p) * p; // round half up, as the book teaches
+
+const r10 = (n, x, a) => { const d = x % 10; return num(n, `Round ${fmt(x)} to the nearest 10.`, a, d ? `Ones digit ${d}: round ${d < 5 ? "down" : "up"}.` : "It already ends in 0.", null, { r: 10, x }); };
+const r100 = (n, x, a) => { const d = Math.floor(x / 10) % 10; return num(n, `Round ${fmt(x)} to the nearest 100.`, a, x % 100 ? `Tens digit ${d}: round ${d < 5 ? "down" : "up"}.` : "It already ends in 00.", null, { r: 100, x }); };
+function est(n, p, expr, a) {
+  const shown = expr.split(" ").map((t, i) => i % 2 ? t : fmt(R(+t.replace(/,/g, ""), p))).join(" ");
+  return num(n, `Estimate ${expr}. Round to the nearest ${p}.`, a, `${shown} = ${fmt(a)}`, null, { est: p, expr });
+}
+// Fact families: the facts are built from the two parts, so they are always true.
+function famFacts(a, b) { const c = a + b; return [...new Set([`${a} + ${b} = ${c}`, `${b} + ${a} = ${c}`, `${c} − ${a} = ${b}`, `${c} − ${b} = ${a}`])]; }
+function pickAll(n, q, right, wrong) { const o = right.slice(); o.splice((n.length + right.length) % (o.length + 1), 0, wrong); return multi(n, q, o, right, "Same three numbers."); }
+const famWrong = (a, b) => { const m = Math.max(a, b); return `${a + b} + ${m} = ${a + b + m}`; };
+function fam(n, a, b, given) {
+  const f = famFacts(a, b); if (!f.includes(given)) console.error("Fact not in family:", n, given);
+  const rest = f.filter(x => x !== given);
+  return pickAll(n, `${given}. Tap the other ${rest.length === 1 ? "one" : rest.length}.`, rest, famWrong(a, b));
+}
+const famAll = (n, a, b) => { const f = famFacts(a, b); return pickAll(n, `Fact family of ${a}, ${b} and ${a + b}. Tap all ${f.length}.`, f, famWrong(a, b)); };
+const forms = (n, given, right, wrong) => pickAll(n, `${given}. Tap the other 3.`, right, wrong);
+
+// Pictures (decorative: the question text always carries the numbers).
+const eq = h => `<div class="big-eq">${h}</div>`;
+const groups = (g, k) => `<div class="dotpic">${`<span class="g">${"<i></i>".repeat(k)}</span>`.repeat(g)}</div>`;
+const array = (r, c) => `<div class="dotpic"><span class="grid" style="grid-template-columns:repeat(${c},20px)">${"<i></i>".repeat(r * c)}</span></div>`;
+const bars = (...rows) => `<div class="bm">${rows.map(r => `<div class="bp">${r.map(([w, l, u]) => `<span style="flex:${w}"${u ? ' class="unk"' : ""}>${l}</span>`).join("")}</div>`).join("")}</div>`;
+function nline(lo, hi, x, show) {
+  const W = 420, P = 30, X = v => P + (v - lo) * (W - 2 * P) / (hi - lo), near = x - lo < (hi - lo) / 2 ? lo : hi;
+  let g = "", t = "";
+  for (let i = 0; i <= 10; i++) {
+    const v = lo + i * (hi - lo) / 10, h = i % 5 ? 10 : 18;
+    g += `<line x1="${X(v)}" y1="${62 - h}" x2="${X(v)}" y2="62"/>`;
+    if (i % 5 === 0) t += `<text x="${X(v)}" y="92"${show && v === near ? ' class="hit"' : ""}>${v}</text>`;
+  }
+  return `<svg viewBox="0 0 ${W} 100" class="art nl"><g stroke="var(--ink)" stroke-width="3" stroke-linecap="round"><line x1="${P}" y1="62" x2="${W - P}" y2="62"/>${g}</g>` +
+    `<g text-anchor="middle" fill="var(--muted)" font-size="20">${t}</g><circle cx="${X(x)}" cy="24" r="20" fill="var(--sun)"/>` +
+    `<text x="${X(x)}" y="31" text-anchor="middle" font-size="18" font-weight="700" fill="#17323A">${x}</text></svg>`;
+}
+
+const SECTIONS = [
+{ id: "learn", kind: "lesson", emo: "🧮", title: "Learn", meta: "13 cards", next: "words", cards: [
+  { pic: nline(30, 40, 38, true), t: "38 is closer to 40." },
+  { pic: eq("0 1 2 3 4 → down<br>5 6 7 8 9 → up"), t: "Look at the ones digit." },
+  { pic: nline(20, 30, 25, true), t: "Halfway? Round up." },
+  { pic: nline(300, 400, 370, true), t: "Nearest 100: look at the tens." },
+  { pic: eq("23 + 36<br>20 + 40 = 60"), t: "Estimate: round first, then add." },
+  { pic: eq("7 + 0 = 7<br>7 − 0 = 7<br>7 − 7 = 0"), t: "Zero changes nothing. 7 − 7 is 0." },
+  { pic: eq("4 + 9 = 9 + 4"), t: "Add in any order." },
+  { pic: eq("12 − (4 + 3)<br>12 − 7 = 5"), t: "Do the brackets first." },
+  { pic: eq("8 + 4 = 12<br>4 + 8 = 12<br>12 − 8 = 4<br>12 − 4 = 8"), t: "A fact family has four facts." },
+  { pic: eq("8 + □ = 20<br>□ = 20 − 8 = 12"), t: "Use the family to find □." },
+  { pic: bars([[10, "10 boys"], [8, "8 girls"]], [[18, "18 in all", 1]]), t: "Altogether means add." },
+  { pic: bars([[10, "Judy 10"]], [[6, "Dina 6"], [4, "4", 1]]), t: "How many more? Subtract: 10 − 6." },
+  { pic: groups(3, 4), t: "3 groups of 4: 3 × 4 = 12." }
+] },
+{ id: "words", kind: "words", emo: "🔑", title: "Key words", meta: "6 words", next: "book1", words: [
+  ["⬆️", "Round", "to the nearest 10 or 100"],
+  ["≈", "Estimate", "a close guess"],
+  ["🏠", "Fact family", "3 numbers, 4 facts"],
+  ["➕", "Altogether", "add"],
+  ["➖", "Left · fewer", "subtract"],
+  ["✖️", "Groups of", "multiply"]
+] },
+
+// Book, Activities of Sections 2–3 (Examples are taught in Learn).
+sheet("book1", "📘", "Book 1", [
+  r10("1a", 12, 10), r10("1b", 31, 30), r10("1c", 85, 90), r10("1d", 56, 60),
+  r10("2a", 532, 530), r10("2b", 468, 470), r10("2c", 255, 260),
+  r100("3a", 590, 600), r100("3b", 134, 100), r100("3c", 4242, 4200), r100("3d", 1750, 1800),
+  est("4.1a", 10, "38 + 63 + 25", 130), est("4.1b", 10, "284 + 545", 830),
+  est("4.2a", 100, "106 + 387", 500), est("4.2b", 100, "220 + 571 + 134", 900),
+  est("5.1a", 10, "89 − 35", 50), est("5.1b", 10, "671 − 237", 430),
+  est("5.2a", 100, "804 − 578", 200), est("5.2b", 100, "395 − 144", 300),
+  num("6", "Houston to Dallas is 239 miles. You drove 111. About how far is left? Round to the nearest 100.", 100, "200 − 100 = 100"),
+  num("1a", "231 + 0 = ___", 231, "Adding 0 changes nothing."),
+  num("1b", "507 − 0 = ___", 507, "Taking away 0 changes nothing."),
+  num("1c", "451 + ___ = 451", 0, "Only 0 keeps it the same."),
+  num("1d", "770 − ___ = 770", 0, "Only 0 keeps it the same."),
+  num("1e", "19 − 19 = ___", 0, "A number take away itself is 0."),
+  num("1f", "0 − 0 = ___", 0, "Nothing take away nothing is 0."),
+  num("2a", "4 + 2 = 2 + ___", 4, "Add in any order."),
+  num("2b", "0 + 5 = 5 + ___", 0, "Add in any order."),
+  num("2c", "___ + 12 = 12 + 20", 20, "Add in any order."),
+  num("3a", "10 + (13 − 7) = ___", 16, "10 + 6 = 16"),
+  num("3b", "23 − (5 − 5) = ___", 23, "23 − 0 = 23"),
+  num("3c", "(90 − 45) + 25 = ___", 70, "45 + 25 = 70"),
+  num("3d", "35 − (25 + 10) = ___", 0, "35 − 35 = 0"),
+  num("4a", "(7 + 8) + 3 = 7 + (___ + 3)", 8, "Group in any way when adding."),
+  num("4b", "2 + 9 + 11 = 2 + (9 + ___)", 11, "Group in any way when adding."),
+  num("5a", "38 − 8 − 5 = ___", 25, "30 − 5 = 25"),
+  num("5b", "38 − (8 − 5) = ___", 35, "38 − 3 = 35"),
+  num("5c", "12 + 2 + 6 = ___", 20, "14 + 6 = 20"),
+  num("5d", "12 + (2 + 6) = ___", 20, "12 + 8 = 20")
+]),
+
+// Book, Activities of Sections 4–5.
+sheet("book2", "📗", "Book 2", [
+  fam("1a", 8, 2, "8 + 2 = 10"), fam("1b", 6, 9, "15 − 9 = 6"), fam("1c", 14, 6, "20 − 14 = 6"), fam("1d", 4, 18, "18 + 4 = 22"),
+  famAll("2", 0, 9), famAll("3.1", 10, 10), famAll("3.2", 4, 4),
+  num("4.1", "6 + □ = 10. □ = ___", 4, "10 − 6 = 4"),
+  num("4.2", "○ + 14 = 22. ○ = ___", 8, "22 − 14 = 8"),
+  num("5.1", "6 − X = 2. X = ___", 4, "6 − 2 = 4"),
+  num("5.2", "35 − X = 5. X = ___", 30, "35 − 5 = 30"),
+  num("6.1", "○ − 8 = 10. ○ = ___", 18, "10 + 8 = 18"),
+  num("6.2", "○ − 1 = 21. ○ = ___", 22, "21 + 1 = 22"),
+  mc("1", "7 added to a number gives 12. Which fits?", ["X − 7 = 12", "X + 7 = 12", "12 + 7 = X", "7 − X = 12"], "X + 7 = 12", "X is 5."),
+  mc("2", "Take 10 from a number and get 3. Which fits?", ["X − 10 = 3", "10 − X = 3", "X + 10 = 3", "3 − 10 = X"], "X − 10 = 3", "X is 13."),
+  mc("3", "Take a number from 13 and get 8. Which fits?", ["Y − 13 = 8", "13 + Y = 8", "13 − Y = 8", "8 − 13 = Y"], "13 − Y = 8", "Y is 5."),
+  num("4", "Reggie has $22. His brother has $15. How much altogether?", 37, "22 + 15 = 37"),
+  num("5", "Olivia has 13 pens. 4 are red. The rest are blue. How many are blue?", 9, "13 − 4 = 9"),
+  num("6", "A big truck has 18 wheels. A car has 4. How many fewer does the car have?", 14, "18 − 4 = 14"),
+  mc("7a", "44 books. 20 are fiction. X are not. Which fits?", ["X − 20 = 44", "44 + X = 20", "X − 44 = 20", "20 + X = 44"], "20 + X = 44", "Fiction + others = all."),
+  num("7b", "44 books. 20 are fiction. How many are not?", 24, "44 − 20 = 24"),
+  num("8", "Mathew had $44. He spent $8 and $11. How much is left?", 25, "44 − 8 − 11 = 25"),
+  num("9", "Tim had 68 cards. He got 14 more, then gave away 20. How many now?", 62, "68 + 14 − 20 = 62"),
+  num("10", "12 apples in a basket. 6 were taken. Then 8 were added. How many now?", 14, "12 − 6 + 8 = 14")
+]),
+
+// Workbook, Section 2 questions 1–5.
+sheet("wbr", "🎯", "Workbook: Round", [
+  r10("1a", 68, 70), r10("1b", 84, 80), r10("1c", 65, 70), r10("1d", 70, 70), r10("1e", 19, 20),
+  r10("1f", 23, 20), r10("1g", 55, 60), r10("1h", 189, 190), r10("1i", 464, 460), r10("1j", 547, 550),
+  r10("1k", 8, 10), r10("1l", 42, 40), r10("1m", 57, 60), r10("1n", 63, 60), r10("1o", 39, 40),
+  r10("1p", 89, 90), r10("1q", 48, 50), r10("1r", 16, 20), r10("1s", 33, 30), r10("1t", 315, 320),
+  r10("1u", 129, 130), r10("1v", 402, 400), r10("1w", 245, 250), r10("1x", 352, 350), r10("1y", 167, 170),
+  mc("2", "Diana waited 13 minutes for the bus. About how long is that?", ["about 10 minutes", "about 20 minutes"], "about 10 minutes", "13 rounds down to 10."),
+  num("3a", "Stacy spent $78. Round it to the nearest 10.", 80, "Ones digit 8: round up."),
+  mc("3b", "Rounded to the nearest 10 it is $50. What could she spend?", ["$56", "$52", "$44", "$58"], "$52", "52 rounds down to 50."),
+  mc("3c", "Rounded to the nearest 10 it is $70. What could she spend?", ["$75", "$64", "$68", "$61"], "$68", "68 rounds up to 70."),
+  num("3d", "Stacy spent $9. Round it to the nearest 10.", 10, "Ones digit 9: round up."),
+  mc("4a", "Is 72 closer to 70 or to 80?", ["70", "80"], "70", "72 is before 75.", nline(70, 80, 72)),
+  mc("4b", "Is 78 closer to 70 or to 80?", ["70", "80"], "80", "78 is past 75.", nline(70, 80, 78)),
+  r100("5a", 245, 200), r100("5b", 355, 400), r100("5c", 648, 600), r100("5d", 382, 400), r100("5e", 555, 600),
+  r100("5f", 550, 600), r100("5g", 70, 100), r100("5h", 139, 100), r100("5i", 592, 600), r100("5j", 1409, 1400),
+  r100("5k", 362, 400), r100("5l", 915, 900), r100("5m", 4200, 4200), r100("5n", 749, 700), r100("5o", 6590, 6600)
+]),
+
+// Workbook, Section 2 questions 9–10.
+sheet("wbe", "🔍", "Workbook: Estimate", [
+  est("9a", 10, "24 + 17", 40), est("9b", 10, "16 + 81", 100), est("9c", 10, "153 + 166", 320),
+  est("9d", 10, "27 + 12 + 19", 60), est("9e", 10, "42 + 17 + 22", 80), est("9f", 10, "18 + 91 + 34", 140),
+  est("9g", 10, "82 + 35", 120), est("9h", 10, "547 + 149", 700), est("9i", 10, "23 + 47", 70),
+  est("9j", 10, "215 + 204", 420), est("9k", 10, "658 + 253", 910), est("9l", 10, "352 + 188", 540),
+  est("10a", 100, "493 + 238", 700), est("10b", 100, "391 + 277", 700), est("10c", 100, "488 + 212 + 235", 900),
+  est("10d", 100, "665 + 289", 1000), est("10e", 100, "306 + 329", 600), est("10f", 100, "115 + 235 + 258", 600),
+  est("10g", 100, "238 + 571", 800), est("10h", 100, "207 + 267", 500), est("10i", 100, "2,405 + 3,164", 5600)
+]),
+
+// Workbook, Sections 3–5.
+sheet("wb2", "📒", "Workbook 2", [
+  num("9", "Maria had 177 points. She won 89, then lost 77. What is her score?", 189, "177 − 77 + 89 = 189"),
+  fam("1a", 9, 1, "9 + 1 = 10"), fam("1b", 3, 5, "3 + 5 = 8"), fam("1c", 5, 4, "5 + 4 = 9"),
+  fam("1d", 9, 3, "12 − 9 = 3"), fam("1e", 0, 14, "14 − 0 = 14"), fam("1f", 4, 6, "10 − 4 = 6"),
+  famAll("2", 6, 7), famAll("3", 5, 6), famAll("5", 12, 12), famAll("6", 9, 9),
+  forms("7a", "9 + 7 = ?", ["7 + 9 = ?", "? − 7 = 9", "? − 9 = 7"], "9 − 7 = ?"),
+  forms("7b", "13 + □ = 15", ["□ + 13 = 15", "15 − 13 = □", "15 − □ = 13"], "13 − □ = 15"),
+  forms("7c", "12 − 5 = □", ["12 − □ = 5", "5 + □ = 12", "□ + 5 = 12"], "5 − □ = 12"),
+  forms("7d", "31 − □ = 18", ["31 − 18 = □", "18 + □ = 31", "□ + 18 = 31"], "□ − 18 = 31"),
+  forms("7e", "Δ − 6 = 12", ["Δ − 12 = 6", "6 + 12 = Δ", "12 + 6 = Δ"], "6 − Δ = 12"),
+  forms("7f", "Δ + 14 = 28", ["14 + Δ = 28", "28 − 14 = Δ", "28 − Δ = 14"], "Δ − 14 = 28"),
+  num("8", "How much more than 124 is 214?", 90, "214 − 124 = 90"),
+  num("9", "How much less than 1,000 is 502?", 498, "1,000 − 502 = 498"),
+  num("10", "A number is 22 more than 1,238. What is it?", 1260, "1,238 + 22 = 1,260"),
+  num("11", "One puzzle has 750 pieces. Another has 500. How many in both?", 1250, "750 + 500 = 1,250"),
+  num("12", "Take $15 from Jack and he still has $18. How much did he have?", 33, "18 + 15 = 33"),
+  num("13", "17 geese. 5 flew away. How many are left?", 12, "17 − 5 = 12"),
+  num("14", "Serge has 20 beetles. 11 are green. How many are not green?", 9, "20 − 11 = 9"),
+  num("15", "Edward has $14. A book costs $18. How much more does he need?", 4, "18 − 14 = 4")
+]),
+
+// Math Concepts sheet, Sections 2–5.
+sheet("con", "💡", "Concepts", [
+  r10("1", 34, 30), r10("2", 58, 60), r10("3", 75, 80), r10("4", 286, 290), r10("5", 764, 760), r10("6", 685, 690),
+  r100("7", 584, 600), r100("8", 846, 800), r100("9", 750, 800), r100("10", 3147, 3100), r100("11", 5167, 5200), r100("12", 4250, 4300),
+  est("13", 10, "26 + 62", 90), est("14", 100, "478 − 122", 400),
+  num("1", "12 + 0 = ___", 12, "Adding 0 changes nothing."),
+  num("2", "39 − 0 = ___", 39, "Taking away 0 changes nothing."),
+  num("3", "87 − 87 = ___", 0, "A number take away itself is 0."),
+  mc("4", "Which shows adding in any order?", ["4 + 9 = 13", "4 + 9 = 9 + 4", "4 + 9 = 7 + 6"], "4 + 9 = 9 + 4", "Same numbers, swapped."),
+  num("5a", "(16 − 10) + 4 = ___", 10, "6 + 4 = 10"),
+  num("5b", "16 − (10 + 4) = ___", 2, "16 − 14 = 2"),
+  num("6", "(5 + 7) + 4 = 5 + (___ + 4)", 7, "Group in any way when adding."),
+  famAll("1", 4, 6), fam("2a", 25, 25, "25 + 25 = 50"), fam("2b", 17, 18, "17 + 18 = 35"),
+  num("3", "□ + 82 = 90. □ = ___", 8, "90 − 82 = 8"),
+  num("4", "24 + N = 50. N = ___", 26, "50 − 24 = 26"),
+  num("5", "64 − □ = 8. □ = ___", 56, "64 − 8 = 56"),
+  num("6", "□ − 9 = 14. □ = ___", 23, "14 + 9 = 23"),
+  mc("1a", "A number added to 7 gives 14. Which fits?", ["7 + □ = 14", "14 + 7 = □", "7 − □ = 14", "□ − 7 = 14"], "7 + □ = 14", "□ is 7."),
+  mc("1b", "Eight added to a number gives 23. Which fits?", ["8 − □ = 23", "□ + 8 = 23", "□ − 8 = 23", "23 + 8 = □"], "□ + 8 = 23", "□ is 15."),
+  mc("2a", "A number taken from 9 gives 5. Which fits?", ["□ − 9 = 5", "9 + □ = 5", "9 − □ = 5", "5 − 9 = □"], "9 − □ = 5", "□ is 4."),
+  mc("2b", "Eight taken from a number gives 23. Which fits?", ["8 − □ = 23", "□ + 8 = 23", "23 − 8 = □", "□ − 8 = 23"], "□ − 8 = 23", "□ is 31."),
+  num("3", "Johnny has 14 pens. Jane has 25. How many altogether?", 39, "14 + 25 = 39"),
+  num("4", "25 apples on a tree. 15 were picked. How many are left?", 10, "25 − 15 = 10"),
+  num("5", "If 16 more children come, there will be 50. How many are here now?", 34, "50 − 16 = 34"),
+  mc("6", "Nadia has 5 candies. Amanda has 17. Who has fewer, and by how many?", ["Amanda, 12 fewer", "Nadia, 12 fewer", "Nadia, 22 fewer"], "Nadia, 12 fewer", "17 − 5 = 12"),
+  mc("7", "Romano has 5 stickers. Silvio has 17. Who has more, and by how many?", ["Silvio, 12 more", "Romano, 12 more", "Silvio, 22 more"], "Silvio, 12 more", "17 − 5 = 12"),
+  num("8", "There are 24 more boys than girls. There are 78 boys. How many girls?", 54, "78 − 24 = 54"),
+  num("9", "Henry got 17 in science. That is 2 less than French. What did he get in French?", 19, "17 + 2 = 19"),
+  num("10", "Johnny has 14 books. Jane has 5 more. How many does Jane have?", 19, "14 + 5 = 19"),
+  num("11", "Andrea had 121 beads. She lost some. 73 are left. How many did she lose?", 48, "121 − 73 = 48"),
+  num("12", "Jamal took out $20. Now he has $50 saved. How much did he have before?", 70, "50 + 20 = 70")
+]),
+
+// Course Questions W10 (key printed on the sheet; every answer rechecked).
+sheet("cq", "📋", "Course Questions", [
+  est("18a", 10, "23 + 36", 60), est("18b", 10, "48 + 77", 130), est("19", 10, "671 − 237", 430),
+  est("20a", 100, "422 + 540", 900), est("20b", 100, "756 + 112", 900),
+  est("21a", 100, "761 − 334", 500), est("21b", 100, "874 − 510", 400),
+  num("22", "A year has 365 days. 104 have gone. About how many are left? Round to the nearest 100.", 300, "400 − 100 = 300"),
+  num("23a", "231 + 0 = ___", 231, "Adding 0 changes nothing."),
+  num("23b", "451 + ___ = 451", 0, "Only 0 keeps it the same."),
+  num("23c", "770 − ___ = 770", 0, "Only 0 keeps it the same."),
+  num("23d", "19 − 19 = ___", 0, "A number take away itself is 0."),
+  num("24a", "4 + 2 = 2 + 4 = ___", 6, "Add in any order."),
+  num("24b", "0 + 5 = 5 + 0 = ___", 5, "Add in any order."),
+  mc("24c", "20 − 8 = 12. Is 8 − 20 the same?", ["Yes", "No"], "No", "Order matters when you subtract."),
+  num("25", "8,207 + 3,980 = 12,187. So 3,980 + 8,207 = ___", 12187, "Same numbers, other order."),
+  num("26a", "35 − (25 + 10) = ___", 0, "35 − 35 = 0"),
+  num("26b", "10 + (13 − 7) = ___", 16, "10 + 6 = 16"),
+  num("26c", "(90 − 45) + 2 = ___", 47, "45 + 2 = 47"),
+  num("27a", "23 − (8 − 3) = ___", 18, "23 − 5 = 18"),
+  num("27b", "(23 − 8) − 3 = ___", 12, "15 − 3 = 12"),
+  fam("28a", 8, 7, "8 + 7 = 15"), fam("28b", 15, 33, "15 + 33 = 48"), fam("28c", 18, 56, "74 − 18 = 56"),
+  famAll("29a", 4, 9), famAll("29b", 0, 8), famAll("29c", 17, 17),
+  num("30a", "25 − m = 4. m = ___", 21, "25 − 4 = 21"),
+  num("30b", "□ − 4 = 43. □ = ___", 47, "43 + 4 = 47"),
+  num("30c", "y − 5 = 12. y = ___", 17, "12 + 5 = 17"),
+  mc("31", "Take 10 from a number and get 3. Which fits?", ["10 − X = 3", "X + 10 = 3", "X − 10 = 3", "3 − 10 = X"], "X − 10 = 3", "X is 13."),
+  mc("32", "Take a number from 13 and get 8. Which fits?", ["13 − Y = 8", "Y − 13 = 8", "13 + Y = 8", "8 − 13 = Y"], "13 − Y = 8", "Y is 5."),
+  num("33", "Reggie has $22. His brother has $15. How much altogether?", 37, "22 + 15 = 37"),
+  num("34", "Olivia has 13 pens. 4 are red. The rest are blue. How many are blue?", 9, "13 − 4 = 9"),
+  num("35", "Jane's school has 230 girls. Hannah's has 85 more. How many in Hannah's?", 315, "230 + 85 = 315"),
+  num("36", "258 sheep, 45 cows and 32 horses. How many animals?", 335, "258 + 45 + 32 = 335"),
+  mc("37a", "44 books. 20 are fiction. X are not. Which fits?", ["X − 20 = 44", "20 + X = 44", "44 + X = 20", "X − 44 = 20"], "20 + X = 44", "Fiction + others = all."),
+  num("37b", "44 books. 20 are fiction. How many are not?", 24, "44 − 20 = 24"),
+  num("38", "Mathew had $44. He spent $8 and $11. How much is left?", 25, "44 − 8 − 11 = 25"),
+  num("39", "Tim had 68 cards. He got 14 more, then gave away 20. How many now?", 62, "68 + 14 − 20 = 62"),
+  num("40", "12 apples in a basket. 6 were taken. Then 8 were added. How many now?", 14, "12 − 6 + 8 = 14"),
+  mc("41", "Kelly must sell 100 tickets. She sold 85. Which finds how many are left?", ["100 + 85 = □", "100 − 85 = □", "85 − 100 = □", "□ − 85 = 100"], "100 − 85 = □", "15 are left."),
+  mc("42", "Nathan had S stamps. Josh gave him 7 more. How many now?", ["S − 7", "7", "S + 7", "S"], "S + 7", "Getting more means add."),
+  mc("43", "Fred had 14 stickers. He gave some away. 8 are left. Which fits?", ["14 + □ = 8", "14 − □ = 8", "□ − 14 = 8", "8 − □ = 14"], "14 − □ = 8", "He gave away 6."),
+  num("44", "417 local and 136 international students. How many altogether?", 553, "417 + 136 = 553")
+]),
+
+// MATH PRACTICE sheet (5 pages). Its typed key has errors; answers here come from the page.
+sheet("prac", "📝", "Practice", [
+  num("1", "Farah has 330 stamps. 200 are foreign. How many are not foreign?", 130, "330 − 200 = 130"),
+  multi("2", "A number + 29 = 85. Which ones help find it?", ["□ + 29 = 85", "85 − 29 = □", "85 − □ = 29", "29 − □ = 85"], ["□ + 29 = 85", "85 − 29 = □", "85 − □ = 29"], "The number is 56."),
+  num("3", "Layla has 16 books. Ali has 18. How many altogether?", 34, "16 + 18 = 34"),
+  num("4", "Lara has 9 pencils. Carla has 7 more. How many does Carla have?", 16, "9 + 7 = 16"),
+  num("5", "50 students. 24 are boys. How many are girls?", 26, "50 − 24 = 26"),
+  mc("6", "Jason must type 140 pages. He typed 39. Which finds the pages left?", ["140 + 39 = □", "□ − 39 = 140", "140 − 39 = □", "39 + 140 = □"], "140 − 39 = □", "140 − 39 = 101 pages."),
+  mc("7", "Lara had X chocolates. John gives her 7 more. How many now?", ["7 − X", "X + 7", "X", "X − 9"], "X + 7", "Getting more means add."),
+  num("8", "549 adults and 326 kids. How many people altogether?", 875, "549 + 326 = 875"),
+  mc("9", "Which fits the picture?", ["5 × 5 = 25", "4 + 5 = 9", "5 × 4 = 20"], "5 × 4 = 20", "5 groups of 4.", groups(5, 4)),
+  mc("10", "5 × 4 = ?", ["20", "8", "25", "16"], "20", "4 + 4 + 4 + 4 + 4 = 20"),
+  mc("11", "9 + 9 + 9 = 27. Which is the same?", ["3 × 9 = 27", "9 × 9 = 27", "3 + 9 = 27"], "3 × 9 = 27", "Three 9s."),
+  num("12", "3 × 4 = ___", 12, "3 groups of 4.", groups(3, 4)),
+  num("13", "4 rows of 7. 4 × 7 = ___", 28, "7 + 7 + 7 + 7 = 28", array(4, 7)),
+  mc("14", "6 + 6 + 6 + 6 + 6 = 30. Which is the same?", ["5 × 6 = 30", "6 × 6 = 30", "5 + 6 = 30"], "5 × 6 = 30", "Five 6s."),
+  num("15", "8 + 8 + 8 + 8 = 32. So ___ × 8 = 32", 4, "Four 8s.")
+]),
+
+// Math Practice (typed sheet, sections 2.3 and 2.4.1) with its answer key; every answer rechecked.
+// 14 Nov: rechecked against the teacher's handwritten key (math-nov/math practice Answers .pdf); all match.
+// That key leaves Q7 and Q8 blank, so those two are solved here.
+sheet("prac2", "✏️", "Practice 2", [
+  fam("1a", 17, 17, "17 + 17 = 34"), fam("1b", 8, 6, "14 − 8 = 6"),
+  num("2a", "15 + □ = 18. □ = ___", 3, "18 − 15 = 3"),
+  num("2b", "□ − 4 = 43. □ = ___", 47, "43 + 4 = 47"),
+  num("2c", "x + 4 = 12. x = ___", 8, "12 − 4 = 8"),
+  num("2d", "25 − y = 5. y = ___", 20, "25 − 5 = 20"), // W11 handwritten sheet only
+  num("3", "62 take away what number gives 24?", 38, "62 − 24 = 38"),
+  num("4", "A number take away 15 is 28. What is the number?", 43, "28 + 15 = 43"),
+  num("5", "Take 35 from a number and you get 45. What is the number?", 80, "45 + 35 = 80"),
+  multi("6", "Two numbers are 25 apart. One is 63. What could the other be?", ["25", "38", "78", "88"], ["38", "88"], "63 − 25 and 63 + 25"),
+  num("7", "What number added to 45 gives 87?", 42, "87 − 45 = 42"),
+  num("8", "Add 50 to a number and you get 350. What is the number?", 300, "350 − 50 = 300"),
+  num("1", "Andrew has $110. Gabrielle has $13 more. How much does Gabrielle have?", 123, "110 + 13 = 123"),
+  num("2", "A shop had 940 books. It sold 839. How many are left?", 101, "940 − 839 = 101"),
+  num("3", "Jane's school has 230 girls. Hannah's has 85 more. How many in Hannah's?", 315, "230 + 85 = 315"),
+  num("4", "An elephant weighs 2,006 kg. That is 1,564 kg more than her calf. What does the calf weigh?", 442, "2,006 − 1,564 = 442"),
+  mc("5", "Gracie's school has 1,405 students. Sara's has 760. Who has fewer, and by how many?", ["Gracie's, 645 fewer", "Sara's, 645 fewer", "Sara's, 2,165 fewer"], "Sara's, 645 fewer", "1,405 − 760 = 645"),
+  mc("6", "Gloria's has 79 games. Zorro's has 69. Who has fewer, and by how many?", ["Zorro's, 10 fewer", "Gloria's, 10 fewer", "Zorro's, 148 fewer"], "Zorro's, 10 fewer", "79 − 69 = 10"),
+  num("7", "The family has $1,284. The trip costs $1,800. How much more do they need?", 516, "1,800 − 1,284 = 516"),
+  num("8", "Jim spends $45 and has $108 left. How much did he have?", 153, "108 + 45 = 153"),
+  num("9", "Kelly gets $25 and then has $100. How much does she have now?", 75, "100 − 25 = 75"),
+  num("10", "35 children on a trip. 4 boys wear yellow, 12 boys wear white. How many girls?", 19, "35 − 4 − 12 = 19")
+])
+];
+// Resolve answer text to option indexes; a typo here would make a question unwinnable, so fail loudly.
+for (const s of SECTIONS) if (s.qs) s.qs.forEach(q => {
+  if (q.t === "mc") { q.a = q.o.indexOf(q.a); if (q.a < 0) console.error("No answer option:", s.id, q.n, q.q); }
+  if (q.t === "multi") { q.a = q.a.map(x => q.o.indexOf(x)); if (q.a.includes(-1)) console.error("No answer option:", s.id, q.n, q.q); }
+});
+</script>
+<script>
+"use strict";
+const NAME = "Fairouz";
+const KEY = "fairouz-math-w11"; // own key: Week 11 progress starts fresh and never mixes with Week 10
+const PRAISE = ["Great job", "Super", "Well done", "Amazing"];
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const nWords = t => String(t || "").trim().split(/\s+/).filter(Boolean).length;
+function mk(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+// Progress lives only in this browser. Storage can be blocked (private window, previews):
+// then the page still works, it just forgets on reload.
+let store = { q: {}, pos: {} };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.q) store = Object.assign(store, s); } catch (e) { /* storage blocked: keep in-memory store */ }
+if (!store.pos) store.pos = {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* storage blocked: progress lasts until reload */ } }
+
+const quizzes = () => SECTIONS.filter(s => s.kind === "quiz");
+const qid = (s, i) => s.id + "-" + i;
+const rightCount = s => s.qs.filter((q, i) => store.q[qid(s, i)]?.r === 1).length;
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function answerText(q) {
+  if (q.t === "num") return q.a.map(fmt).join(" or ");
+  if (q.t === "multi") return q.a.map(k => q.o[k]).join(", ");
+  return q.o[q.a];
+}
+
+// ---- views ----
+const view = document.getElementById("view");
+function updateJar() { let r = 0; for (const s of quizzes()) r += rightCount(s); document.getElementById("jar").textContent = "⭐ " + r; }
+function wire() { view.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go)); }
+
+function home() {
+  view.innerHTML = `<h1 class="hi">Hi ${NAME}! 👋</h1><div class="tiles">${SECTIONS.map(s => {
+    const quiz = s.kind === "quiz", r = quiz ? rightCount(s) : 0;
+    return `<button class="tile${quiz && r === s.qs.length ? " done" : ""}" data-go="${s.id}"><span class="emo" aria-hidden="true">${s.emo}</span><span class="name">${esc(s.title)}</span><span class="meta">${quiz ? `⭐ ${r} / ${s.qs.length}` : esc(s.meta)}</span></button>`;
+  }).join("")}</div>`;
+  wire();
+}
+
+function lesson(s) {
+  const n = s.cards.length, k = Math.min(store.pos[s.id] || 0, n - 1), c = s.cards[k];
+  const pic = c.stages
+    ? `<ol class="stages">${c.stages.map(([p, l]) => `<li><span class="sp" aria-hidden="true">${p}</span><span>${esc(l)}</span></li>`).join("")}</ol>`
+    : `<div class="bigpic" aria-hidden="true">${c.pic}</div>`;
+  view.innerHTML = `<div class="dots" role="img" aria-label="Card ${k + 1} of ${n}">${s.cards.map((_, j) => `<i class="${j === k ? "on" : j < k ? "seen" : ""}"></i>`).join("")}</div>
+    <article class="lcard">${pic}<p class="say">${esc(c.t)}</p></article>
+    <div class="nav">${k ? `<button class="btn" data-k="${k - 1}">← Back</button>` : "<span></span>"}
+    ${k < n - 1 ? `<button class="btn solid big" data-k="${k + 1}">Next →</button>` : `<button class="btn solid big" data-go="${s.next}">Done ⭐</button>`}</div>`;
+  view.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { store.pos[s.id] = +b.dataset.k; save(); lesson(s); });
+  wire();
+}
+
+function words(s) {
+  view.innerHTML = `<h1 class="hi">${esc(s.title)}</h1><div class="kw">${s.words.map(([p, w, m]) => `<div class="word"><span class="sp" aria-hidden="true">${p}</span><b>${esc(w)}</b><span>${esc(m)}</span></div>`).join("")}</div>
+    <div class="nav"><span></span><button class="btn solid big" data-go="${s.next}">Practice →</button></div>`;
+  wire();
+}
+
+function quiz(s) {
+  const n = s.qs.length, r = rightCount(s);
+  let k = store.pos[s.id];
+  if (k == null) { k = s.qs.findIndex((q, i) => store.q[qid(s, i)]?.r !== 1); if (k < 0) k = n; }
+  k = Math.max(0, Math.min(k, n)); store.pos[s.id] = k;
+  view.innerHTML = `<div class="qtop"><span>${s.emo} ${esc(s.title)}</span><b>⭐ ${r} / ${n}</b></div><div class="meter" aria-hidden="true"><i style="width:${100 * r / n}%"></i></div>`;
+  view.appendChild(k === n ? finish(s) : card(s, k));
+  updateJar();
+}
+function goto(s, j) { store.pos[s.id] = j; save(); quiz(s); window.scrollTo(0, 0); }
+
+function finish(s) {
+  const n = s.qs.length, r = rightCount(s), miss = s.qs.findIndex((q, i) => store.q[qid(s, i)]?.r !== 1);
+  const box = mk("div", "party", `<div class="bigpic" aria-hidden="true">${r === n ? "🌟" : "⭐"}</div>
+    <p class="say">${r === n ? `All done, ${NAME}!` : `${r} of ${n} stars!`}</p>
+    <div class="nav col">${miss >= 0 ? `<button class="btn solid big" data-j="${miss}">Keep going →</button>` : ""}
+    <button class="btn" data-go="">🏠 Home</button><button class="btn" id="reset">Start over</button></div>`);
+  box.querySelectorAll("[data-j]").forEach(b => b.onclick = () => goto(s, +b.dataset.j));
+  box.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+  const rb = box.querySelector("#reset");
+  rb.onclick = () => {
+    if (rb.dataset.arm) { s.qs.forEach((q, i) => delete store.q[qid(s, i)]); goto(s, 0); return; }
+    rb.dataset.arm = "1"; rb.textContent = "Tap again to clear";
+    setTimeout(() => { if (rb.isConnected) { delete rb.dataset.arm; rb.textContent = "Start over"; } }, 4000);
+  };
+  return box;
+}
+
+function feedback(q, st) {
+  if (st.r === 1) return `<div class="fb ok" role="status"><b class="say">${esc(st.praise || PRAISE[0])}, ${NAME}! <span class="star">⭐</span></b></div>`;
+  const line = nWords(q.why) <= 10 ? q.why : "";
+  const ans = `Answer: <b>${esc(answerText(q))}</b>`;
+  return `<div class="fb no" role="status"><p>${ans}</p>${line ? `<p class="why">${esc(line)}</p>` : ""}<button class="btn solid big" data-retry>Try again</button></div>`;
+}
+
+function card(s, i) {
+  const q = s.qs[i], id = qid(s, i), st = store.q[id], n = s.qs.length;
+  const wrap = mk("div", "q");
+  let qtext = esc(q.q);
+  if (q.t === "num") qtext = qtext.replace("___", `<span class="blank">${st?.r === 1 ? esc(st.v) : "&nbsp;"}</span>`);
+  wrap.innerHTML = `<p class="hint">${i + 1} / ${n}</p><h2 class="qtext">${qtext}</h2>${q.pic ? `<div class="qpic" aria-hidden="true">${q.pic}</div>` : ""}`;
+  const body = mk("div", "rows"); wrap.appendChild(body);
+  const done = (r, v) => { store.q[id] = { r, v, praise: pick(PRAISE) }; save(); quiz(s); };
+
+  if (q.t === "mc") {
+    const ans = q.a;
+    const box = mk("div", "opts"); body.appendChild(box);
+    q.o.forEach((o, k) => {
+      const b = mk("button", "opt"); b.type = "button"; b.textContent = o;
+      if (st) {
+        b.disabled = true;
+        if (k === st.v) b.classList.add(st.r === 1 ? "picked-right" : "picked-wrong");
+        else if (k === ans && st.r !== 1) b.classList.add("is-answer");
+      } else b.onclick = () => done(k === ans ? 1 : 0, k);
+      box.appendChild(b);
+    });
+  } else if (q.t === "multi") {
+    const sel = new Set(st ? st.v : []);
+    if (!st) body.appendChild(mk("p", "hint", "Tap all that fit."));
+    const box = mk("div", "opts"); body.appendChild(box);
+    let chk;
+    q.o.forEach((o, k) => {
+      const b = mk("button", "opt"); b.type = "button"; b.textContent = o;
+      const good = q.a.includes(k);
+      if (st) {
+        b.disabled = true;
+        if (sel.has(k)) b.classList.add(good ? "picked-right" : "picked-wrong");
+        else if (good && st.r !== 1) b.classList.add("is-answer");
+      } else {
+        b.setAttribute("aria-pressed", "false");
+        b.onclick = () => { sel.has(k) ? sel.delete(k) : sel.add(k); b.classList.toggle("picked-now", sel.has(k)); b.setAttribute("aria-pressed", String(sel.has(k))); chk.disabled = !sel.size; };
+      }
+      box.appendChild(b);
+    });
+    if (!st) {
+      chk = mk("button", "btn solid big", "Check ✓"); chk.disabled = true;
+      chk.onclick = () => done(sel.size === q.a.length && q.a.every(k => sel.has(k)) ? 1 : 0, [...sel]);
+      body.appendChild(chk);
+    }
+  } else if (q.t === "num") {
+    // Typed number: commas, spaces and $ are ignored, so "1,800" and "$123" count.
+    const inp = mk("input", "numin"); inp.type = "text"; inp.inputMode = "numeric"; inp.autocomplete = "off";
+    inp.setAttribute("aria-label", "Your answer"); inp.value = st ? st.v : ""; inp.disabled = !!st;
+    if (st) inp.classList.add(st.r === 1 ? "ok" : "no");
+    body.appendChild(inp);
+    if (!st) {
+      const b = mk("button", "btn solid big", "Check ✓");
+      const check = () => { const v = inp.value.replace(/[\s,$]/g, ""); if (!/^\d+$/.test(v)) { inp.focus(); return; } done(q.a.includes(+v) ? 1 : 0, inp.value.trim()); };
+      b.onclick = check; inp.onkeydown = e => { if (e.key === "Enter") check(); };
+      body.appendChild(b);
+      if (matchMedia("(pointer: fine)").matches) setTimeout(() => inp.focus({ preventScroll: true }));
+    }
+  }
+
+  if (st) {
+    wrap.appendChild(mk("div", null, feedback(q, st)).firstElementChild);
+    const rt = wrap.querySelector("[data-retry]");
+    if (rt) rt.onclick = () => { delete store.q[id]; save(); quiz(s); };
+  }
+  const nav = mk("div", "nav", `${i ? `<button class="btn" data-j="${i - 1}" aria-label="Previous question">←</button>` : "<span></span>"}
+    <button class="btn${st?.r === 1 ? " solid big" : ""}" data-j="${i + 1}">${i + 1 < n ? "Next →" : "Finish ⭐"}</button>`);
+  nav.querySelectorAll("[data-j]").forEach(b => b.onclick = () => goto(s, +b.dataset.j));
+  wrap.appendChild(nav);
+  return wrap;
+}
+
+// The hash makes sections linkable and the Back button work; `cur` keeps the page working where the hash can't change.
+let cur = null;
+function show(id) {
+  cur = id; const s = SECTIONS.find(x => x.id === id);
+  if (!s) home(); else if (s.kind === "quiz") quiz(s); else if (s.kind === "words") words(s); else lesson(s);
+  updateJar(); window.scrollTo(0, 0);
+}
+function go(id) { show(id); try { location.hash = id; } catch (e) { /* hash locked (static preview): in-page state is enough */ } }
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h !== cur) show(h); });
+document.getElementById("home").onclick = () => go("");
+show(location.hash.slice(1));
+</script>
+
+</body>
+</html>
